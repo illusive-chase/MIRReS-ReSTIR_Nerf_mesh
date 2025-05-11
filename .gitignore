@@ -15,9 +15,9 @@ ablation.sh
 runall_firekeeper*
 runall_dtu*
 *.exr
-nerf/ScreenSpaceReSTIR/.slangpy_cache
+nerf/ScreenSpaceReSTIR/.slangtorch_cache
 nerf/ScreenSpaceReSTIR/*.lock
-nerf/bvhworkers/.slangpy_cache
+nerf/bvhworkers/.slangtorch_cache
 nerf/bvhworkers/*.lock
 .vscode
 test_out

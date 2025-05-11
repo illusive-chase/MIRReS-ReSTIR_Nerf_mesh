@@ -2,7 +2,7 @@ import numpy as np
 import time
 import torch
 import torchvision.utils as vutils
-import slangpy
+import slangtorch
 import pyexr
 from nerf.ScreenSpaceReSTIR.Denoising import *
 from nerf.ScreenSpaceReSTIR.GenerateLightTiles import *
@@ -16,11 +16,11 @@ class restirbvhWorker:
         self.v_ind = vt_ind
 
         print("loading bvh shaders, this can be slow at first time...")
-        self.m_gen_ele = slangpy.loadModule('nerf/bvhworkers/get_elements.slang')
-        self.m_morton_codes = slangpy.loadModule('nerf/bvhworkers/lbvh_morton_codes.slang')
-        self.m_radixsort = slangpy.loadModule('nerf/bvhworkers/lbvh_single_radixsort.slang')
-        self.m_hierarchy = slangpy.loadModule('nerf/bvhworkers/lbvh_hierarchy.slang')
-        self.m_bounding_box = slangpy.loadModule('nerf/bvhworkers/lbvh_bounding_boxes.slang')
+        self.m_gen_ele = slangtorch.loadModule('nerf/bvhworkers/get_elements.slang')
+        self.m_morton_codes = slangtorch.loadModule('nerf/bvhworkers/lbvh_morton_codes.slang')
+        self.m_radixsort = slangtorch.loadModule('nerf/bvhworkers/lbvh_single_radixsort.slang')
+        self.m_hierarchy = slangtorch.loadModule('nerf/bvhworkers/lbvh_hierarchy.slang')
+        self.m_bounding_box = slangtorch.loadModule('nerf/bvhworkers/lbvh_bounding_boxes.slang')
 
     def update_bvh(self):
         #first part, get element and bbox---------------
@@ -147,10 +147,10 @@ class restirbvhWorker:
 
 def load_m_for_restir(framedim_x, framedim_y):
 #load part
-    make_sampleable_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/make_sampleable.slang')
+    make_sampleable_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/make_sampleable.slang')
     light_tile_count = 128
     light_tile_size = 1024
-    generateLightTiles_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/GenerateLightTiles.slang',
+    generateLightTiles_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/GenerateLightTiles.slang',
                                               defines={"LIGHT_TILE_COUNT": int(light_tile_count),
                                                        "LIGHT_TILE_SIZE": int(light_tile_size)
                                                        }
@@ -158,7 +158,7 @@ def load_m_for_restir(framedim_x, framedim_y):
     screen_tile_size = 8
     initialLightSampleCount = 32
     initialBRDFSampleCount = 1
-    InitialResampling_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/InitialResampling.slang',
+    InitialResampling_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/InitialResampling.slang',
                                               defines={"LIGHT_TILE_COUNT": int(light_tile_count),
                                                        "LIGHT_TILE_SIZE": int(light_tile_size),
                                                        "SCREEN_TILE_SIZE": int(screen_tile_size),
@@ -167,24 +167,24 @@ def load_m_for_restir(framedim_x, framedim_y):
                                                        }
                                               )
     maxHistoryLength = 20
-    TemporalResampling_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/TemporalResampling.slang',
+    TemporalResampling_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/TemporalResampling.slang',
                                               defines={"MAX_HISTORY_LENGTH": int(maxHistoryLength)
                                                        }
                                               )
     spatial_NEIGHBOR_OFFSET_COUNT = 8192
     spatialNeighborCount = 5
     spatialGatherRadius = 30
-    SpatialResampling_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/SpatialResampling.slang',
+    SpatialResampling_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/SpatialResampling.slang',
                                               defines={"NEIGHBOR_OFFSET_COUNT": int(spatial_NEIGHBOR_OFFSET_COUNT),
                                                        "NEIGHBOR_COUNT": int(spatialNeighborCount),
                                                        "GATHER_RADIUS": int(spatialGatherRadius)
                                                        }
                                               )
-    EvaluateFinalSamples_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/EvaluateFinalSamples.slang')
+    EvaluateFinalSamples_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/EvaluateFinalSamples.slang')
 
-    FinalShading_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/FinalShading.slang')
+    FinalShading_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/FinalShading.slang')
 
-    denoising_m = slangpy.loadModule('nerf/ScreenSpaceReSTIR/EAWDenoise.slang')
+    denoising_m = slangtorch.loadModule('nerf/ScreenSpaceReSTIR/EAWDenoise.slang')
 
     light_data = torch.zeros((light_tile_count*light_tile_size, 3), dtype=torch.float, device='cuda')
     light_uv = torch.zeros((light_tile_count*light_tile_size, 2), dtype=torch.int, device='cuda')

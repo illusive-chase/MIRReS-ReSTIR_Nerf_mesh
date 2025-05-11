@@ -20,6 +20,5 @@ torch-scatter
 xatlas
 scikit-learn
 torchmetrics
-slangpy
+slangtorch
 pyexr
-time
