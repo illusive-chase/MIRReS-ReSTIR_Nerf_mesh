@@ -26,3 +26,8 @@ test_ngp_restir
 IR_outputs
 nerf_outputs
 *.sh
+!/run_sb.sh
+!/run_tsir.sh
+!/run_orb.sh
+!/eval_sb.sh
+!/eval_tsir.sh

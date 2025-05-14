@@ -1319,10 +1319,11 @@ class Trainer(object):
     def test(self, loader, save_path=None, name=None, write_video=True):
 
         if save_path is None:
-            save_path = os.path.join(self.workspace, 'results')
-            save_path_brdf ='None'
-            if self.opt.use_brdf:
-                save_path_brdf = os.path.join(self.workspace, 'results_brdf')
+            save_path = self.workspace
+        save_path_brdf ='None'
+        if self.opt.use_brdf:
+            save_path_brdf = os.path.join(save_path, 'results_brdf')
+        save_path = os.path.join(save_path, 'results')
 
         if name is None:
             name = f'{self.name}_ep{self.epoch:04d}'

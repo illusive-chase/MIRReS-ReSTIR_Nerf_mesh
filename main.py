@@ -28,7 +28,9 @@ if __name__ == '__main__':
     parser.add_argument('--test', action='store_true', help="test mode")
     parser.add_argument('--test_no_video', action='store_true', help="test mode: do not save video")
     parser.add_argument('--test_no_mesh', action='store_true', help="test mode: do not save mesh")
+    parser.add_argument('--test_no_eval', action='store_true', help="test mode: do not eval")
     parser.add_argument('--camera_traj', type=str, default='', help="nerfstudio compatible json file for camera trajactory")
+    parser.add_argument('--save_path', type=str, help="results path")
 
     ### dataset options
     parser.add_argument('--data_format', type=str, default='nerf', choices=['nerf', 'colmap', 'dtu'])
@@ -246,12 +248,12 @@ if __name__ == '__main__':
         else:
             if not opt.test_no_video:
                 
-                if test_loader.has_gt:
+                if test_loader.has_gt and not opt.test_no_eval:
                     trainer.metrics = [PSNRMeter(), SSIMMeter(), LPIPSMeter(device=device)] # set up metrics
                     trainer.metrics_brdf = [PSNRMeter_brdf(), SSIMMeter_brdf(), LPIPSMeter_brdf(device=device)] # set up metrics
                     trainer.evaluate(test_loader) # blender has gt, so evaluate it.
 
-                trainer.test(test_loader, write_video=False) # test and save video
+                trainer.test(test_loader, opt.save_path, write_video=False) # test and save video
             
             if not opt.test_no_mesh:
                 if opt.stage == 1:

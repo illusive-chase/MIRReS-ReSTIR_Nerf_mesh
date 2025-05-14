@@ -7,10 +7,12 @@ import scipy.signal
 from skimage.metrics import peak_signal_noise_ratio as psnr
 from PIL import Image
 
-gt_dir = "./data/TensoIR_Synthetic/lego/"
-albedo_dir = "./lego_11/validation_brdf/"
-save_dir = "./ours_albedo/"
-save_dir_gt = "./albedo_gt/"
+case_name = "arm"
+# gt_dir = f"../RadianceFieldStudio/data/tensoir/armadillo/"
+gt_dir = f"../RadianceFieldStudio/data/tensoir/{case_name}/"
+albedo_dir = f"./IR_outputs/ir_{case_name}/validation_brdf/"
+save_dir = f"./IR_outputs/ir_{case_name}/ours_albedo/"
+save_dir_gt = f"./IR_outputs/ir_{case_name}/albedo_gt/"
 save_gt = False
 save_albedo = True
 mask_thr = 0.9 # 0.3 for ficus and 0.9 for other scene
